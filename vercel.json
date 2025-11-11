@@ -1,0 +1,8 @@
+{
+  "routes": [
+    { "src": "/pgp", "dest": "/pgp.txt" },
+    { "src": "/ascii", "dest": "/ascii.txt" },
+    { "src": "/tools", "dest": "/tools.json" },
+    { "src": "/status", "dest": "/status.json" }
+  ]
+}

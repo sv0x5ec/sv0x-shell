@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>sv0x5ec — shell</title>
+<meta name="description" content="sv0x5ec — Rebranded." />
+<style>
+:root{ --bg0:#020204; --panel:rgba(2,4,6,0.45); --glass-border: rgba(0,255,122,0.06);
+  --neon:#00ff7a; --muted:#98a0a6; --glass: rgba(255,255,255,0.03); --accent:#00ff7a; }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:ui-monospace,"JetBrains Mono",Menlo,Monaco,monospace;background:linear-gradient(180deg,#000 0%, #021015 100%);color:var(--neon)}
+.page{min-height:100%;display:flex;align-items:center;justify-content:center;padding:28px}
+.shell-wrap{width:min(1200px,96%);position:relative}
+.bg-crest{position:absolute; inset:14px;background-image:url('data:image/svg+xml;utf8,<?xml version="1.0" encoding="UTF-8"?>%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 x2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23006bb3%22 stop-opacity=%220.08%22/%3E%3Cstop offset=%221%22 stop-color=%22%2300ffd1%22 stop-opacity=%220.04%22/%3E%3C/linearGradient%3E%3C/filter id=%22f%22%3E%3CfeGaussianBlur stdDeviation=%2212%22/%3E%3C/filter%3E%3C/defs%3E%3Cg filter=%22url(%23f)%22 fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cpath d=%22M600 40c120 0 240 50 300 150s40 220 0 320-120 190-300 190S240 610 180 520 80 210 180 120 480 40 600 40z%22 fill=%22url(%23g)%22 /%3E%3Ctext x=%2250%25%22 y=%2260%25%22 text-anchor=%22middle%22 font-family=%22monospace%22 font-size=%22200%22 fill=%22%2300ff7a%22 opacity=%220.03%22%3Esv0x5ec%3C/text%3E%3C/g%3E%3C/svg%3E');background-repeat:no-repeat;background-position:center;background-size:85%;filter:blur(2px) saturate(120%);mix-blend-mode:screen;border-radius:14px;pointer-events:none}
+.wolf-eyes{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; mix-blend-mode:overlay; opacity:0.06;}
+.shell{position:relative;background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(2,2,4,0.32));border-radius:12px;padding:18px;border:1px solid var(--glass-border);box-shadow:0 20px 70px rgba(0,0,0,0.7);backdrop-filter: blur(6px);overflow:hidden}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.brand{display:flex;gap:10px;align-items:center}
+.logo-slim{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#001b12,#002b1f);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03)}
+.logo-slim span{font-weight:800;color:var(--neon);font-size:16px}
+.title{font-size:16px;font-weight:700;color:var(--neon)}
+.subtitle{font-size:13px;color:var(--muted)}
+.controls{margin-left:auto;display:flex;gap:10px;align-items:center}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px 10px;border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer}
+.btn.primary{border-color:var(--glass-border);color:var(--neon);background:rgba(0,255,122,0.03)}
+.kbd{background:#071017;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.02);font-size:12px;color:var(--muted)}
+.terminal{border-radius:10px;padding:14px;background:linear-gradient(180deg, rgba(3,3,3,0.4), rgba(10,10,12,0.18));border:1px solid rgba(255,255,255,0.02);color:var(--neon);min-height:520px;height:64vh;max-height:820px;overflow:auto;position:relative}
+.output{white-space:pre-wrap;font-size:15px;line-height:1.45;color:var(--neon)}
+.prompt-row{display:flex;gap:10px;align-items:flex-start;margin-top:12px}
+.prompt{min-width:170px;color:var(--neon);font-weight:700;flex-shrink:0}
+.input{flex:1;color:var(--neon);outline:none;min-height:20px;white-space:pre-wrap}
+.cursor{display:inline-block;width:10px;height:18px;background:var(--neon);margin-left:6px;vertical-align:middle;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.footer{margin-top:12px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.theme-picker{display:flex;gap:8px;align-items:center}
+.small{font-size:13px;color:var(--muted)}
+.theme-cyber { --neon:#ff2d95; --accent:#ff2d95; --glass-border:rgba(255,45,149,0.06) }
+.theme-retro { --neon:#7cff00; --accent:#7cff00; --glass-border:rgba(124,255,0,0.06) }
+.theme-ice   { --neon:#4dd0ff; --accent:#4dd0ff; --glass-border:rgba(77,208,255,0.06) }
+@media (max-width:820px){ .prompt{min-width:110px} .terminal{height:56vh} }
+.boot-badge{display:inline-block;padding:6px 10px;border-radius:8px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.02);font-size:12px;color:var(--muted)}
+.auto-run{margin-left:8px}
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell-wrap">
+      <div class="bg-crest" aria-hidden="true"></div>
+      <div class="wolf-eyes" aria-hidden="true">
+        <svg width="520" height="320" viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <g fill="none" fill-rule="evenodd">
+            <path d="M260 8c60 0 120 25 150 75 30 50 30 100 0 150-30 50-90 75-150 75s-120-25-150-75c-30-50-30-100 0-150 30-50 90-75 150-75z" fill="#00ff7a" opacity="0.06"/>
+            <g transform="translate(120,70)" fill="#00bbff" opacity="0.08">
+              <path d="M110 12c-10 0-32 30-32 42 0 12 24 16 24 22 0 6-20 8-20 18 0 20 40 36 60 36s60-16 60-36c0-10-20-12-20-18 0-6 24-10 24-22 0-12-22-42-32-42-10 0-14 20-28 20s-18-20-28-20z"/>
+            </g>
+            <text x="50%" y="60%" text-anchor="middle" font-family="monospace" font-size="44" fill="#00ff7a" opacity="0.04">sv0x5ec</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="shell" id="shellRoot" role="region" aria-label="sv0x shell">
+        <div class="header">
+          <div class="brand">
+            <div class="logo-slim"><span>sv0x</span></div>
+            <div>
+              <div class="title">sv0x5ec — Ethical hacker | Offensive Security Professional</div>
+              <div class="subtitle">Breaking things, and then securing them.</div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="boot-badge">Boot: <strong id="bootMode">manual</strong></div>
+            <button id="autoBtn" class="btn auto-run">AUTO RUN</button>
+            <div class="theme-picker small">Theme:
+              <select id="themeSelect" class="btn" aria-label="theme select">
+                <option value="default">Neon</option>
+                <option value="retro">Retro Green</option>
+                <option value="cyber">Cyberpunk</option>
+                <option value="ice">Ice Blue</option>
+              </select>
+            </div>
+            <button id="clearBtn" class="btn" title="Clear screen">Clear</button>
+            <button id="helpBtn" class="btn primary" title="Show help">Help</button>
+          </div>
+        </div>
+
+        <div class="terminal" id="terminal" tabindex="0">
+          <div id="output" class="output" aria-live="polite"></div>
+
+          <div class="prompt-row" style="margin-top:12px">
+            <div class="prompt">sv0x@shell:~$</div>
+            <div id="cmd" class="input" contenteditable="true" role="textbox" spellcheck="false" aria-label="Command input"></div>
+            <div class="cursor" id="cursor"></div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="small">Quick curl: <span class="kbd">curl https://sv0x5ec.sh/ascii</span> • <span class="kbd">curl https://sv0x5ec.sh/pgp</span></div>
+          <div class="small">Made with ♥ — <span id="ver">sv0x5ec</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const ASCII_URL='/ascii', PGP_URL='/pgp';
+const TOOLS=[{name:"recon-scan",desc:"passive recon scanner"},{name:"pi-c2",desc:"Raspberry Pi C2 demo (sandbox)"},{name:"log-parse",desc:"fast log parser"}];
+const EASTER={'sv0x':"You found the sv0x easter egg — secret vault unlocked. Try 'whoami' or 'sudo' ;)","konami":"↑ ↑ ↓ ↓ ← → ← → b a — nothing breaks. yet."};
+const out=document.getElementById('output'), cmd=document.getElementById('cmd'), clearBtn=document.getElementById('clearBtn'), helpBtn=document.getElementById('helpBtn'), themeSelect=document.getElementById('themeSelect'), autoBtn=document.getElementById('autoBtn'), bootMode=document.getElementById('bootMode');
+let theme=localStorage.getItem('sv0x-theme')||'default';
+if(theme==='retro')document.documentElement.classList.add('theme-retro');
+if(theme==='cyber')document.documentElement.classList.add('theme-cyber');
+if(theme==='ice')document.documentElement.classList.add('theme-ice');
+themeSelect.value=theme;
+function print(l=''){out.textContent+=l+'\n';out.scrollTop=out.scrollHeight}
+function clearOutput(){out.textContent=''}
+async function safeFetchText(u){try{const r=await fetch(u);return r.ok?await r.text():''}catch(e){return''}}
+async function typeLine(el,txt,s=22){for(let i=0;i<txt.length;i++){el.textContent+=txt[i];out.scrollTop=out.scrollHeight;await new Promise(r=>setTimeout(r,s+(Math.random()*18)))}el.textContent+='\n'}
+const intro=[{text:'Initializing sv0x runtime...',wait:700},{text:'Connecting to sv0xLabs...',wait:900},{text:'Connected! Authenticated session established.',wait:500},{text:'Dropping into shell...',wait:850}];
+async function runIntro(sim=false){clearOutput();for(const L of intro){const el=document.createElement('div');out.appendChild(el);await typeLine(el,L.text,sim?10:24);await new Promise(r=>setTimeout(r,L.wait))}print('Type "help" to get started.\n')}
+const HELP=`Available commands:
+ help  - show this message
+ about - about blurb
+ skills- skills & stack
+ projects - projects & links
+ contact  - disclosure + pgp
+ resume   - resume link
+ pgp    - show PGP endpoint
+ ascii  - ascii banner
+ tools  - list tools
+ whoami - identify
+ sudo   - denied
+ clear  - clear screen
+ theme  - show theme
+ secret - easter egg
+ auto   - rerun startup script`;
+function echo(c){print(\`sv0x@shell:~$ \${c}\`)}
+async function runCommand(raw){
+  const p=raw.trim().split(/\s+/);const c=(p[0]||'').toLowerCase();if(!c)return;echo(raw);
+  if(c==='help'){print(HELP);return}
+  if(c==='about'){print("I'm Daniel (sv0x5ec) — Ethical hacker - Red team/Offensive Security. I publish writeups, tools, and responsibly disclosed research.");return}
+  if(c==='skills'){print("Skills:\\n - Red teaming, recon, post-exploitation\\n - Python, Bash, Go, Node\\n - Raspberry Pi projects, C2 labs\\n - Docker, Debian hardening");return}
+  if(c==='projects'){print("Projects:\\n - recon-scan (github.com/sv0x/recon-scan)\\n - pi-c2 (github.com/sv0x/pi-c2)\\n - log-parse (github.com/sv0x/log-parse)");return}
+  if(c==='contact'){print("Responsible disclosure: https://sv0x5ec.sh/disclosure\\nPGP: curl https://sv0x5ec.sh/pgp");return}
+  if(c==='resume'){print("Resume: https://sv0x5ec.sh/resume.pdf");return}
+  if(c==='pgp'){print("PGP: curl https://sv0x5ec.sh/pgp");return}
+  if(c==='ascii'){const t=await safeFetchText(ASCII_URL);print(t||"ascii banner not available");return}
+  if(c==='tools'){print(JSON.stringify(TOOLS,null,2));return}
+  if(c==='whoami'){print("sv0x5ec — ethical hacker (red team) — aka Daniel");return}
+  if(c==='sudo'){print("sudo: sorry. permission denied. (always secure)");return}
+  if(c==='clear'){clearOutput();return}
+  if(c==='theme'){print(\`Active theme: \${theme}\`);return}
+  if(c==='secret'||EASTER[c]){print(EASTER[c]||"Nothing here... or is there?");return}
+  if(c==='auto'){await simulateAutoRun();return}
+  print(\`\${c}: command not found. Type "help".\`)
+}
+document.getElementById('cmd').addEventListener('keydown',async e=>{if(e.key==='Enter'){e.preventDefault();const t=e.target.textContent||'';e.target.textContent='';await runCommand(t)}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='l'){e.preventDefault();clearOutput()}})
+document.getElementById('clearBtn').addEventListener('click',()=>clearOutput())
+document.getElementById('helpBtn').addEventListener('click',()=>runCommand('help'))
+themeSelect.addEventListener('change',e=>{const v=e.target.value;document.documentElement.classList.remove('theme-retro','theme-cyber','theme-ice');if(v==='retro')document.documentElement.classList.add('theme-retro');if(v==='cyber')document.documentElement.classList.add('theme-cyber');if(v==='ice')document.documentElement.classList.add('theme-ice');theme=v;localStorage.setItem('sv0x-theme',v);print(\`Theme switched to: \${v}\`)})
+async function simulateAutoRun(){bootMode.textContent='auto';clearOutput();print('$ python3 sv0x.sh --auto');await new Promise(r=>setTimeout(r,300));const steps=['Loading runtime modules...','Initializing secure enclave...','Loading plugins: recon, netprobe, parser...','Connecting to sv0xLabs control-plane...','Handshake complete (fingerprint: 0xSV0X...)'];for(const s of steps){print(s);await new Promise(r=>setTimeout(r,420))}await runIntro(true);bootMode.textContent='manual'}
+document.body.addEventListener('click',()=>document.getElementById('cmd').focus())
+document.addEventListener('keydown',e=>{if(e.key==='`'){e.preventDefault();document.getElementById('cmd').focus()}})
+document.getElementById('cmd').focus();runIntro();
+safeFetchText(ASCII_URL).then(t=>{if(t&&t.length>20){const s=document.createElement('span');s.style.position='absolute';s.style.left='-9999px';s.textContent='ASCII ready';document.body.appendChild(s)}})
+</script>
+</body>
+</html>
