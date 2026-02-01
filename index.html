@@ -1,141 +1,179 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
 <title>sv0x5ec</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 :root{
-  --ink:#dff;
-  --muted:#7aa;
   --cyan:#00ffff;
-
-  --panelA: rgba(6,9,12,.75);
-  --panelB: rgba(0,0,0,.65);
-
-  --border: rgba(0,255,255,.22);
-  --borderHot: rgba(0,255,255,.55);
-  --glow: rgba(0,255,255,.12);
-
+  --cyan-soft:rgba(0,255,255,.35);
+  --cyan-glow:rgba(0,255,255,.55);
+  --ink:#d7fdfd;
+  --bg:#000;
   --radius:22px;
+
+  --wallpaper:url("assets/sv0x5ec-PWNZ.png");
 }
 
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;margin:0}
+
 body{
-  margin:0;
   background:#000;
   color:var(--ink);
-  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  overflow:hidden;
 }
 
-/* Background */
+/* === BACKGROUND === */
 .bg{
-  position:fixed; inset:0;
+  position:fixed;
+  inset:0;
   background:
-    radial-gradient(55% 45% at 50% 40%, rgba(0,255,255,.07), transparent 60%),
-    url("assets/sv0x5ec-PWNZ.png") center/cover no-repeat;
-  z-index:-1;
+    radial-gradient(circle at 50% 40%, rgba(0,255,255,.18), transparent 60%),
+    var(--wallpaper) center/cover no-repeat;
+  opacity:.9;
+  filter:contrast(1.05);
 }
 
-/* Layout */
-.wrap{
-  min-height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:56px 20px;
-}
-
+/* === TERMINAL PANEL === */
 .panel{
-  width:min(1200px,100%);
-  background:linear-gradient(180deg,var(--panelA),var(--panelB));
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:32px 36px 28px;
-  box-shadow:0 0 80px var(--glow);
   position:relative;
+  max-width:1180px;
+  margin:6vh auto;
+  padding:42px 40px 38px;
+  border-radius:var(--radius);
+  background:linear-gradient(180deg,rgba(10,20,20,.88),rgba(5,10,10,.92));
+  border:1px solid rgba(0,255,255,.25);
+  box-shadow:
+    0 0 0 1px rgba(0,255,255,.12),
+    0 0 90px rgba(0,255,255,.35);
 }
 
-/* === NEW: TOP LOGO ONLY === */
-.top-logo{
+/* ambient glow lifting background */
+.panel::before{
+  content:"";
+  position:absolute;
+  inset:-140px;
+  background:radial-gradient(closest-side, rgba(0,255,255,.22), transparent 65%);
+  filter:blur(40px);
+  opacity:.55;
+  z-index:0;
+}
+
+.panel > *{position:relative;z-index:2}
+
+/* === TOP LOGO === */
+.brandTop{
   display:flex;
   justify-content:center;
-  margin-bottom:14px;
-}
-.top-logo img{
-  width:110px;
-  opacity:.20;              /* subtle */
-  pointer-events:none;
+  margin-bottom:18px;
 }
 
-/* Header */
-.header{
+.brandTop img{
+  width:88px;
+  opacity:.95;
+  filter:drop-shadow(0 0 12px rgba(0,255,255,.35));
+}
+
+/* === TITLE === */
+.title{
   text-align:center;
-  margin-bottom:28px;
-}
-.header h1{
-  margin:0;
-  font-size:52px;
-  letter-spacing:.08em;
+  font-size:56px;
+  letter-spacing:.12em;
   color:var(--cyan);
-}
-.header .tagline{
-  margin-top:8px;
-  font-size:13px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:var(--muted);
+  text-shadow:0 0 18px var(--cyan-glow);
 }
 
-/* Grid */
+.subtitle{
+  text-align:center;
+  margin-top:6px;
+  font-size:12px;
+  letter-spacing:.28em;
+  opacity:.85;
+}
+
+/* === GRID === */
 .grid{
+  margin-top:36px;
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
 }
 
+/* === GLITCH CARDS === */
 .card{
-  border:1px solid rgba(0,255,255,.12);
-  border-radius:18px;
-  padding:18px;
+  position:relative;
+  padding:22px 22px 20px;
+  border-radius:16px;
   background:rgba(0,0,0,.45);
-  transition:.15s ease;
+  border:1px solid rgba(0,255,255,.25);
+  cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease;
+  overflow:hidden;
 }
+
+.card::before,
+.card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(0,255,255,.6),transparent 70%);
+  opacity:0;
+}
+
+.card::after{
+  background:linear-gradient(-120deg,transparent 30%,rgba(0,255,255,.4),transparent 70%);
+}
+
 .card:hover{
-  border-color:var(--borderHot);
-  box-shadow:0 0 32px rgba(0,255,255,.18);
   transform:translateY(-2px);
+  box-shadow:0 0 28px rgba(0,255,255,.55);
 }
+
+.card:hover::before{
+  opacity:.8;
+  animation:glitch1 .35s linear infinite;
+}
+
+.card:hover::after{
+  opacity:.6;
+  animation:glitch2 .45s linear infinite;
+}
+
+@keyframes glitch1{
+  0%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  100%{transform:translateX(-6px)}
+}
+
+@keyframes glitch2{
+  0%{transform:translateY(-4px)}
+  50%{transform:translateY(4px)}
+  100%{transform:translateY(-4px)}
+}
+
 .card h3{
   margin:0 0 6px;
-  font-size:15px;
+  color:var(--cyan);
+  letter-spacing:.08em;
 }
+
 .card p{
   margin:0;
-  font-size:12px;
-  color:rgba(220,255,255,.7);
+  font-size:13px;
+  opacity:.85;
 }
 
-/* Footer */
+/* === FOOTER === */
 .footer{
-  margin-top:24px;
+  margin-top:28px;
   display:flex;
   justify-content:space-between;
-  font-size:12px;
-  color:var(--muted);
-}
-.status::before{
-  content:"● ";
-  color:var(--cyan);
-}
-
-@media(max-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:600px){
-  .grid{grid-template-columns:1fr}
+  font-size:11px;
+  opacity:.6;
 }
 </style>
 </head>
@@ -143,40 +181,45 @@ body{
 <body>
 <div class="bg"></div>
 
-<main class="wrap">
-<section class="panel">
-
-  <!-- LOGO ONLY -->
-  <div class="top-logo">
-    <img src="assets/sv0x5ec-logo-0x5.png" alt="sv0x5ec logo">
+<div class="panel">
+  <div class="brandTop">
+    <img src="assets/sv0x5ec-0x5-logo.png" alt="sv0x5ec logo">
   </div>
 
-  <!-- ORIGINAL HEADER -->
-  <header class="header">
-    <h1>sv0x5ec</h1>
-    <div class="tagline">Hacker • Red Team • Offensive Security</div>
-  </header>
+  <div class="title">sv0x5ec</div>
+  <div class="subtitle">HACKER • RED TEAM • OFFENSIVE SECURITY</div>
 
-  <!-- ORIGINAL GRID -->
-  <nav class="grid">
-    <div class="card"><h3>Field Notes</h3><p>Curated signal. Operator mindset.</p></div>
-    <div class="card"><h3>Research</h3><p>Breakdowns and insight.</p></div>
-    <div class="card"><h3>Tools</h3><p>Utilities for speed.</p></div>
-    <div class="card"><h3>Operations</h3><p>Workflow and execution.</p></div>
-    <div class="card"><h3>Writeups</h3><p>No oversharing. Just signal.</p></div>
-    <div class="card"><h3>Contact</h3><p>Minimal exposure.</p></div>
-  </nav>
+  <div class="grid">
+    <div class="card">
+      <h3>Field Notes</h3>
+      <p>Curated signal. Operator mindset.</p>
+    </div>
+    <div class="card">
+      <h3>Research</h3>
+      <p>Breakdowns, patterns, insight.</p>
+    </div>
+    <div class="card">
+      <h3>Tools</h3>
+      <p>Utilities built for speed.</p>
+    </div>
+    <div class="card">
+      <h3>Operations</h3>
+      <p>Workflow and execution.</p>
+    </div>
+    <div class="card">
+      <h3>Writeups</h3>
+      <p>No oversharing. Just signal.</p>
+    </div>
+    <div class="card">
+      <h3>Contact</h3>
+      <p>Minimal exposure.</p>
+    </div>
+  </div>
 
-  <footer class="footer">
-    <span>© <span id="y"></span> sv0x5ec</span>
-    <span class="status">status: online</span>
-  </footer>
-
-</section>
-</main>
-
-<script>
-document.getElementById("y").textContent=new Date().getFullYear();
-</script>
+  <div class="footer">
+    <div>© 2026 sv0x5ec</div>
+    <div>status: online</div>
+  </div>
+</div>
 </body>
 </html>
