@@ -40,40 +40,49 @@
     }
 
     /* Background: worldmap + streaks + vignette + scanlines */
-    .bg{
-      position:fixed; inset:0;
-      background:
-        radial-gradient(70% 55% at 50% 40%, rgba(0,255,255,.18), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.78)),
-        var(--wallpaper);
-      background-size: cover;
-      background-position:center;
-      filter: saturate(1.10) contrast(1.08);
-      z-index:-3;
+.bg{
+  position:fixed; inset:0;
+  background:
+    radial-gradient(70% 55% at 50% 40%, rgba(0,255,255,.22), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.66)),
+    var(--wallpaper);
+  background-size: cover;
+  background-position:center;
+  filter: saturate(1.55) contrast(1.28) brightness(1.06);
+  z-index:-3;
+  }
+.bg::before{
+  content:"";
+  position:absolute; inset:0;
+  /* scanlines + noise-ish grain + horizontal “data streaks” */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.05) 0px,
+      rgba(255,255,255,.05) 1px,
+      rgba(0,0,0,0) 3px,
+      rgba(0,0,0,0) 8px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(0,255,255,.10) 0px,
+      rgba(0,255,255,.10) 1px,
+      rgba(0,0,0,0) 10px,
+      rgba(0,0,0,0) 26px
+    ),
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.10), transparent 40%),
+    radial-gradient(circle at 80% 65%, rgba(255,255,255,.08), transparent 45%);
+     opacity:.22;
+     pointer-events:none;
+     mix-blend-mode: screen;
     }
-    .bg::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(80% 70% at 50% 35%, rgba(0,0,0,.10), rgba(0,0,0,.70)),
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,.06) 0px,
-          rgba(255,255,255,.06) 1px,
-          rgba(0,0,0,0) 3px,
-          rgba(0,0,0,0) 8px
-        );
-      opacity:.22;
-      pointer-events:none;
-      mix-blend-mode: overlay;
+  .bg::after{
+     content:"";
+     position:absolute; inset:0;
+     background: radial-gradient(60% 50% at 50% 40%, transparent 0%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.86) 100%);
+     pointer-events:none;
     }
-    .bg::after{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(60% 50% at 50% 40%, transparent 0%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.85) 100%);
-      pointer-events:none;
-    }
+
 
     .wrap{
       min-height:100%;
@@ -91,14 +100,14 @@
       padding: 34px 34px 26px;
       overflow:hidden;
 
-      background: linear-gradient(180deg, rgba(0,0,0,.36), rgba(0,0,0,.58));
-      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.52));
+      border: 1px solid rgba(0,255,255,.40);
 
       box-shadow:
-        0 0 0 1px rgba(0,255,255,.12) inset,
-        0 0 22px var(--glowA),
-        0 0 110px var(--glowB);
-      backdrop-filter: blur(8px);
+        0 0 0 1px rgba(0,255,255,.14) inset,
+        0 0 28px rgba(0,255,255,.22),
+        0 0 140px rgba(0,255,255,.12);
+      backdrop-filter: none;
     }
 
     /* inner HUD edge */
@@ -151,22 +160,18 @@
       margin: 6px 0 18px;
     }
     .mark{
-      width:86px;
+      width: 150px;
       height:auto;
       display:block;
-      opacity:.95;
-      filter: drop-shadow(0 0 18px rgba(0,255,255,.20));
-      pointer-events:none;
-      user-select:none;
+      margin: 0 auto 10px;
+      opacity:.96;
+      filter: drop-shadow(0 0 22px rgba(0,255,255,.25));
     }
     .logo{
-      font-size: clamp(52px, 6.4vw, 92px);
-      letter-spacing:.12em;
-      line-height:1;
-      text-shadow:
-        0 0 10px rgba(0,255,255,.20),
-        0 0 28px rgba(0,255,255,.10);
-      user-select:none;
+      font-size: clamp(34px, 3.2vw, 52px);
+      letter-spacing:.10em;
+      line-height:1.05;
+      text-shadow: 0 0 16px rgba(0,255,255,.18);
     }
     .g{ color: rgba(220,235,235,.88); }
     .c{ color: var(--cyan2); }
@@ -390,12 +395,6 @@
           <div class="kicker"><span class="pip"></span> Category</div>
           <h3 class="title">Tools</h3>
           <p class="desc">Utilities built for speed and clarity.</p>
-        </a>
-
-        <a class="card" href="javascript:void(0)" aria-label="Research">
-          <div class="kicker"><span class="pip"></span> Category</div>
-          <h3 class="title">Research</h3>
-          <p class="desc">Breakdowns, patterns, and technical insight.</p>
         </a>
 
         <a class="card" href="javascript:void(0)" aria-label="Operations">
