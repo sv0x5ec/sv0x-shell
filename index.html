@@ -182,23 +182,32 @@
 
     /* BIGGER logo */
     .logo{
-      width:128px;
+      width:160px;
       height:auto;
       margin-bottom: 6px;
       filter:
-        drop-shadow(0 0 18px rgba(107,222,234,.35))
-        drop-shadow(0 0 52px rgba(31,182,255,.22));
+        drop-shadow(0 0 22px rgba(107,222,234,.55))
+        drop-shadow(0 0 70px rgba(31,182,255,.45));
       user-select:none;
     }
 
     .brand{
-      margin-top: 8px;
+      margin-top: 6px;
       font-family:"Orbitron", system-ui, sans-serif;
       font-weight:700;
       letter-spacing:.06em;
-      font-size: 28px;
+      font-size: 30px;
       line-height: 1.1;
-      text-shadow: 0 0 20px rgba(107,222,234,.18);
+     .brand-muted{
+  color: rgba(207,239,255,.65); /* clean grey-cyan */
+}
+
+.brand-accent{
+  color: #6bdeea; /* CYAN 0x5 */
+  text-shadow:
+    0 0 14px rgba(107,222,234,.55),
+    0 0 32px rgba(31,182,255,.35);
+}
     }
     .sub{
       margin-top: 10px;
@@ -429,7 +438,9 @@
 
       <header class="hero">
         <img class="logo" src="assets/sv0x5ec-0x5.png" alt="sv0x5ec logo" />
-        <div class="brand">sv0x5ec</div>
+        <div class="brand">
+          <span class="brand-muted">sv</span><span class="brand-accent">0x5</span><span class="brand-muted">ec</span>
+        </div>
         <div class="sub">HACKER · RED TEAM · OFFENSIVE SECURITY</div>
 
         <div class="chips" aria-label="signal tags">
