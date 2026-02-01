@@ -7,33 +7,35 @@
 
 <style>
 :root{
-  --bg:#000;
-  --panel:rgba(6,9,12,.78);
-  --border:rgba(0,255,255,.22);
-  --borderHot:rgba(0,255,255,.55);
-  --ink:#e6fefe;
-  --muted:#8aa;
+  --ink:#dff;
+  --muted:#7aa;
   --cyan:#00ffff;
-  --radius:20px;
+
+  --panelA: rgba(6,9,12,.75);
+  --panelB: rgba(0,0,0,.65);
+
+  --border: rgba(0,255,255,.22);
+  --borderHot: rgba(0,255,255,.55);
+  --glow: rgba(0,255,255,.12);
+
+  --radius:22px;
 }
 
-/* Reset */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
   background:#000;
   color:var(--ink);
+  font-family:ui-monospace,Menlo,Consolas,monospace;
 }
 
 /* Background */
 .bg{
   position:fixed; inset:0;
   background:
-    radial-gradient(60% 40% at 50% 40%, rgba(0,255,255,.06), transparent 60%),
+    radial-gradient(55% 45% at 50% 40%, rgba(0,255,255,.07), transparent 60%),
     url("assets/sv0x5ec-PWNZ.png") center/cover no-repeat;
-  filter:contrast(1.05) saturate(1.05);
   z-index:-1;
 }
 
@@ -41,33 +43,46 @@ body{
 .wrap{
   min-height:100%;
   display:flex;
-  align-items:flex-start;
   justify-content:center;
-  padding:60px 20px;
+  align-items:flex-start;
+  padding:56px 20px;
 }
 
 .panel{
-  width:min(1100px,100%);
-  background:var(--panel);
+  width:min(1200px,100%);
+  background:linear-gradient(180deg,var(--panelA),var(--panelB));
   border:1px solid var(--border);
   border-radius:var(--radius);
-  padding:48px 48px 36px;
-  box-shadow:0 0 60px rgba(0,255,255,.08);
+  padding:32px 36px 28px;
+  box-shadow:0 0 80px var(--glow);
+  position:relative;
+}
+
+/* === NEW: TOP LOGO ONLY === */
+.top-logo{
+  display:flex;
+  justify-content:center;
+  margin-bottom:14px;
+}
+.top-logo img{
+  width:110px;
+  opacity:.20;              /* subtle */
+  pointer-events:none;
 }
 
 /* Header */
 .header{
   text-align:center;
-  margin-bottom:36px;
+  margin-bottom:28px;
 }
-
-.logo{
-  width:140px;
-  opacity:.95;
+.header h1{
+  margin:0;
+  font-size:52px;
+  letter-spacing:.08em;
+  color:var(--cyan);
 }
-
-.subtitle{
-  margin-top:16px;
+.header .tagline{
+  margin-top:8px;
   font-size:13px;
   letter-spacing:.22em;
   text-transform:uppercase;
@@ -77,32 +92,26 @@ body{
 /* Grid */
 .grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
 }
 
 .card{
-  padding:22px 20px;
   border:1px solid rgba(0,255,255,.12);
-  border-radius:16px;
+  border-radius:18px;
+  padding:18px;
   background:rgba(0,0,0,.45);
-  text-decoration:none;
-  color:var(--ink);
   transition:.15s ease;
 }
-
 .card:hover{
   border-color:var(--borderHot);
-  box-shadow:0 0 30px rgba(0,255,255,.12);
+  box-shadow:0 0 32px rgba(0,255,255,.18);
   transform:translateY(-2px);
 }
-
 .card h3{
   margin:0 0 6px;
   font-size:15px;
-  letter-spacing:.08em;
 }
-
 .card p{
   margin:0;
   font-size:12px;
@@ -111,7 +120,7 @@ body{
 
 /* Footer */
 .footer{
-  margin-top:36px;
+  margin-top:24px;
   display:flex;
   justify-content:space-between;
   font-size:12px;
@@ -122,9 +131,11 @@ body{
   color:var(--cyan);
 }
 
-@media(max-width:700px){
+@media(max-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
   .grid{grid-template-columns:1fr}
-  .panel{padding:36px 24px}
 }
 </style>
 </head>
@@ -133,26 +144,35 @@ body{
 <div class="bg"></div>
 
 <main class="wrap">
-  <section class="panel">
-    <header class="header">
-      <img src="assets/sv0x5ec-0x5-logo.png" class="logo" alt="sv0x5ec">
-      <div class="subtitle">Hacker • Red Team • Offensive Security</div>
-    </header>
+<section class="panel">
 
-    <nav class="grid">
-      <a class="card"><h3>Field Notes</h3><p>Curated signal. Operator mindset.</p></a>
-      <a class="card"><h3>Tools</h3><p>Utilities built for clarity and speed.</p></a>
-      <a class="card"><h3>Research</h3><p>Breakdowns, patterns, insight.</p></a>
-      <a class="card"><h3>Operations</h3><p>Workflow and execution.</p></a>
-      <a class="card"><h3>Writeups</h3><p>No oversharing. Just signal.</p></a>
-      <a class="card"><h3>Contact</h3><p>Minimal exposure.</p></a>
-    </nav>
+  <!-- LOGO ONLY -->
+  <div class="top-logo">
+    <img src="assets/sv0x5ec-logo-0x5.png" alt="sv0x5ec logo">
+  </div>
 
-    <footer class="footer">
-      <span>© <span id="y"></span> sv0x5ec</span>
-      <span class="status">status: online</span>
-    </footer>
-  </section>
+  <!-- ORIGINAL HEADER -->
+  <header class="header">
+    <h1>sv0x5ec</h1>
+    <div class="tagline">Hacker • Red Team • Offensive Security</div>
+  </header>
+
+  <!-- ORIGINAL GRID -->
+  <nav class="grid">
+    <div class="card"><h3>Field Notes</h3><p>Curated signal. Operator mindset.</p></div>
+    <div class="card"><h3>Research</h3><p>Breakdowns and insight.</p></div>
+    <div class="card"><h3>Tools</h3><p>Utilities for speed.</p></div>
+    <div class="card"><h3>Operations</h3><p>Workflow and execution.</p></div>
+    <div class="card"><h3>Writeups</h3><p>No oversharing. Just signal.</p></div>
+    <div class="card"><h3>Contact</h3><p>Minimal exposure.</p></div>
+  </nav>
+
+  <footer class="footer">
+    <span>© <span id="y"></span> sv0x5ec</span>
+    <span class="status">status: online</span>
+  </footer>
+
+</section>
 </main>
 
 <script>
